@@ -22,7 +22,8 @@ d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
       .attr("class", "county")
       .attr("onmouseenter", "showCountyName(this);")
       .attr("onmouseleave", "clearCountyName();")
-      .attr("onclick", "countClick(); highlightFip(this.id);");
+      .attr("onclick", "countClick(); highlightFip(this.id);")
+      .attr("fill", "#0d042e");
       
 
   svg.append("path")
@@ -46,10 +47,10 @@ function highlightFip(fip){
 
   //document.getElementById(fip).style.fill = "green";
   document.querySelectorAll(".county").forEach(function(element) {
-    element.style.fill = "black";
+    element.style.fill = "#0d042e";
     element.classList.remove("highlight");
   });
-  document.getElementById(fip).style.fill = "green";
+  document.getElementById(fip).style.fill = "#e6376b";
   var fips = data.find( ({ county }) => county === fip );
   for(let i = 0; i<fips.neighbors.length; i++){
     let county = document.getElementById(fips.neighbors[i]);
@@ -66,6 +67,8 @@ function showCountyName(county){
 function clearCountyName(){
   document.getElementById("county-hovered").innerHTML = "";
 }
+
+
 
 
 
