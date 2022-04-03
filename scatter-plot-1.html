@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<div id="M8432ACD-outermost">
+	<div id="M8432ACD-chart-title">US Counties by Population and Median Income</div>
+	<div id="M8432ACD-chart"></div>
+
+<style type="text/css">
+	div.tooltip {
+	  position: absolute;
+	  text-align: center;
+	  width: 100px;
+	  padding: 4px;
+	  font: 12px sans-serif;
+	  background: lightsteelblue;
+	  border: 0px;
+	  border-radius: 8px;
+	  pointer-events: none;
+	}
+
+	#M8432ACD-outermost{
+		font-family: sans-serif;
+		font-size: 12px;
+	  text-align: center;
+	}
+	#M8432ACD-chart-title{
+		text-align: center;
+		font-weight: bold;
+		font-size: 16px;
+	}
+	#M8432ACD-chart-source,
+	#M8432ACD-chart-note{
+		text-align: center;
+		font-style: italic;
+		margin-top: 10px;
+	}
+	#M8432ACD-legend{
+	    border: 1px solid darkgray;
+	    justify-content: center;
+	    display: flex;
+	    padding: 5px;
+	    border-radius: 2px;
+	    margin-top: 5px;
+	    width: 260px;
+	    margin-left: 20%
+	}
+
+	#M8432ACD-legend div{
+	  padding: 0 8px;
+	}
+
+</style>
+<script>
+
+
+    var device_width = window.screen.width;
+    console.log(device_width);
+
+    var container_M8432ACD = document.querySelector("#M8432ACD-outermost");
+    //var legend = document.querySelector("#stat-chart-1-legend");
+    var title_M8432ACD = document.querySelector("#M8432ACD-chart-title");
+
+    // set the dimensions and margins of the graph
+    var margin_M8432ACD = { top: 40, right: 30, bottom: 45, left: 40 },
+        width_M8432ACD = 460 - margin_M8432ACD.left - margin_M8432ACD.right,
+        height_M8432ACD = 420 - margin_M8432ACD.top - margin_M8432ACD.bottom;
+
+    var vbw_M8432ACD = width_M8432ACD + margin_M8432ACD.left + margin_M8432ACD.right;
+    var vbh_M8432ACD = height_M8432ACD + margin_M8432ACD.top + margin_M8432ACD.bottom
+
+    // append the svg object to the body of the page
+    if (device_width < 600) {
+        //using viewbox for mobile devices:
+        var svg_M8432ACD = d3.select("#M8432ACD-chart")
+            .append("svg")
+            .attr("viewBox", "0 0 " + vbw_M8432ACD + " " + vbh_M8432ACD)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin_M8432ACD.left + "," + margin_M8432ACD.top + ")");
+        title_M8432ACD.style.width = '100%';
+
+    } else {
+        //using height and width attributes
+        var svg_M8432ACD = d3.select("#M8432ACD-chart")
+            .append("svg")
+            .attr("width", width_M8432ACD + margin_M8432ACD.left + margin_M8432ACD.right)
+            .attr("height", height_M8432ACD + margin_M8432ACD.top + margin_M8432ACD.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin_M8432ACD.left + "," + margin_M8432ACD.top + ")");
+
+        //legend.style.width = '310px';
+        //legend.style.marginLeft = '85px';
+        container_M8432ACD.style.marginLeft = '15%';
+        container_M8432ACD.style.width = '460px';
+
+    }
+
+var div_M8432ACD = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+//Read the data
+d3.csv("https://raw.githubusercontent.com/JakeRatliff/data-us-counties-kneighbors/main/US_county_pop_income.csv", function(data) {
+
+//"https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv"
+  // Add X axis
+  var x_M8432ACD = d3.scaleLinear()
+    .domain(d3.extent(data, function(d) { return +d.Median_Income; }))
+    .range([ 0, width_M8432ACD ]);
+  svg_M8432ACD.append("g")
+    .attr("transform", "translate(0," + (height_M8432ACD+1) + ")")
+    .call(d3.axisBottom(x_M8432ACD).tickFormat(function(d){return d.toLocaleString()}))
+    .selectAll("text")	
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-20)");
+
+  // Add Y axis
+
+  var y_M8432ACD = d3.scaleLinear()
+    .domain(d3.extent(data, function(d) { return +d.Population; }))
+    .range([ height_M8432ACD, 0]);
+  
+  svg_M8432ACD.append("g")
+    .attr("transform", "translate(0,1)")
+    .call(d3.axisLeft(y_M8432ACD).tickFormat(function(d){return d/1000000 + "M"}));
+  
+  svg_M8432ACD.append("text")
+    .attr("text-anchor", "middle")
+    .attr("transform", "rotate(-90)")
+    .attr("y", -30)
+    .attr("x", -170)
+    .text("Population (in Millions)")
+
+   svg_M8432ACD.append("text")
+    .attr("text-anchor", "middle")
+    //.attr("transform", "rotate(-90)")
+    .attr("y", 376)
+    .attr("x", 190)
+    .text("Median Income (USD)")
+
+  // Add dots
+  svg_M8432ACD.append('g')
+    .selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+      .attr("cx", function (d) { return x_M8432ACD(d.Median_Income); } )
+      .attr("cy", function (d) { return y_M8432ACD(d.Population); } )
+      .attr("r", function (d) { return Math.max(d.Population/500000, 1.0); })
+      .attr("data-name", function (d) { return d.NAME; })
+      .style("fill", "#69b3a2")
+      .on("mouseover", function(d) {
+	       div_M8432ACD.transition()
+	         .duration(200)
+	         .style("opacity", .9);
+	       div_M8432ACD.html(d.NAME) //+ "<br/>" + "Population: "+ d.Population)
+	         .style("left", (d3.event.pageX) + "px")
+	         .style("top", (d3.event.pageY - 28) + "px");
+	       })
+     .on("mouseout", function(d) {
+	       div_M8432ACD.transition()
+	         .duration(500)
+	         .style("opacity", 0);
+       });
+
+})
+
+</script>
+</div>
