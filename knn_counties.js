@@ -1,5 +1,3 @@
-
-
 var svg = d3.select("svg");
 var path = d3.geoPath();
 var clickCounter = 0;
@@ -50,7 +48,7 @@ function highlightFip(fip){
     element.style.fill = "#0d042e";
     element.classList.remove("highlight");
   });
-  document.getElementById(fip).style.fill = "#e6376b";
+  document.getElementById(fip).style.fill = "#f44336";
   var fips = data.find( ({ county }) => county === fip );
   for(let i = 0; i<fips.neighbors.length; i++){
     let county = document.getElementById(fips.neighbors[i]);
@@ -67,9 +65,3 @@ function showCountyName(county){
 function clearCountyName(){
   document.getElementById("county-hovered").innerHTML = "";
 }
-
-
-
-
-
-
